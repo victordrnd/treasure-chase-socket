@@ -3,7 +3,7 @@ const http = require('http').Server(app);
 //const io = require('socket.io')(http, { origins: ['http://localhost:4200', "*:*"], transports: ['polling', 'flashsocket'] });
 const io = require("socket.io")(http, {
     cors: {
-      origin: "http://localhost:4200",
+      origin: ["http://localhost:4200", "https://treasure-socket-server.herokuapp.com", "https://treasure-socket.victordurand.fr"],
       methods: ["GET", "POST"],
       credentials: true
     },
