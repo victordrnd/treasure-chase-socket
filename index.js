@@ -111,7 +111,7 @@ function addPoint(username){
     if(connectedUsers[user_index]){
         connectedUsers[user_index].score += 100
     }
-    connectedUsers.sort((a ,b ) => {
+    connectedUsers = connectedUsers.sort((a ,b ) => {
         return a.score - b .score;
     });
 }
