@@ -47,10 +47,7 @@ io.on("connection", socket => {
     socket.on('game.piano.success', username => {
         console.log(`${username} a réussi l'épreuve du Piano !`);
         socket.to("admin").emit("admin.new.logs", `${username} a réussi l'épreuve du Piano !`);
-        const user_index = getUserIndex(username);
-        if(connectedUsers[user_index]){
-            connectedUsers[user_index].score += 100
-        }
+        addPoint(username);
         socket.emit("users.list.updated", connectedUsers);
         socket.broadcast.emit("users.list.updated", connectedUsers);
     })
@@ -85,6 +82,8 @@ app.get("/connected_users",cors(corsOptions), (req, res) => {
     res.send(getActiveUsers());
 })
 
+
+
 function getActiveUsers() {
     return connectedUsers;
 }
@@ -105,6 +104,16 @@ function getUserIndex(username) {
         }
     }
     return -1;
+}
+
+function addPoint(username){
+    const user_index = getUserIndex(username);
+    if(connectedUsers[user_index]){
+        connectedUsers[user_index].score += 100
+    }
+    connectedUsers.sort((a ,b ) => {
+        return a.score - b .score;
+    });
 }
 
 http.listen(process.env.PORT || 3000);
