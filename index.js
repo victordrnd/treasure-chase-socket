@@ -1,6 +1,12 @@
 const app = require('express')();
+var cors = require('cors');
 const http = require('http').Server(app);
 //const io = require('socket.io')(http, { origins: ['http://localhost:4200', "*:*"], transports: ['polling', 'flashsocket'] });
+var corsOptions = {
+    origin: ["http://localhost:4200", "https://tresor.victordurand.fr"],
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }
+
 const io = require("socket.io")(http, {
     cors: {
       origin: ["http://localhost:4200", "https://tresor.victordurand.fr"],
@@ -75,7 +81,9 @@ io.on("connection", socket => {
         socket.broadcast.emit("waiting.message", message);
     })
 });
-
+app.get("/connected_users",cors(corsOptions), (req, res) => {
+    res.send(getActiveUsers());
+})
 
 function getActiveUsers() {
     return connectedUsers;
