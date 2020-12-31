@@ -14,7 +14,6 @@ const io = require("socket.io")(http, {
 let connectedUsers = [];
 
 io.on("connection", socket => {
-    console.log("new connection");
     socket.on('user.login', username => {
         if (userExists(username)) {
             console.warn(`User ${username} already connected`);
@@ -25,6 +24,7 @@ io.on("connection", socket => {
             }
             connectedUsers.push(user);
             console.log(`${username} is connected successfully`);
+            socket.to("admin").emit("admin.new.logs", `${username} vient de se connecter`);
         }
         socket.emit('users.list.updated', connectedUsers);
         socket.broadcast.emit('users.list.updated', connectedUsers);
@@ -40,19 +40,40 @@ io.on("connection", socket => {
 
     socket.on('game.piano.success', username => {
         console.log(`${username} a réussi l'épreuve du Piano !`);
+        socket.to("admin").emit("admin.new.logs", `${username} a réussi l'épreuve du Piano !`);
         const user_index = getUserIndex(username);
-        connectedUsers[user_index].score += 100;
+        if(connectedUsers[user_index]){
+            connectedUsers[user_index].score += 100
+        }
         socket.emit("users.list.updated", connectedUsers);
         socket.broadcast.emit("users.list.updated", connectedUsers);
     })
 
     socket.on('user.disconnect', user => {
         console.log(`${username} has disconnected`);
+        socket.to("admin").emit("admin.new.logs", `${username} has disconnected`);
         const index = getUserIndex(username);
         if (index !== -1)
             connectedUsers.splice(index, 1);
         socket.broadcast.emit('users.connected', connectedUsers);
     });
+
+
+
+    socket.on('game.start', () => {
+        socket.broadcast.emit('game.started', true);
+    });
+
+
+    socket.on("admin.new.connection", () => {
+        socket.join("admin");
+        socket.to("admin").emit("admin.new.logs", "Un nouvel administrateur s'est connecté !");
+    });
+
+
+    socket.on("admin.waiting.message", (message) => {
+        socket.broadcast.emit("waiting.message", message);
+    })
 });
 
 
