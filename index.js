@@ -1,4 +1,5 @@
 const app = require('express')();
+const { equal } = require('assert');
 var cors = require('cors');
 const http = require('http').Server(app);
 //const io = require('socket.io')(http, { origins: ['http://localhost:4200', "*:*"], transports: ['polling', 'flashsocket'] });
@@ -82,7 +83,10 @@ app.get("/connected_users",cors(corsOptions), (req, res) => {
     res.send(getActiveUsers());
 })
 
-
+app.get("/user_exists", cors(corsOptions), (req, res) => {
+    const email = req.query.email;
+    res.send(userExists(email));
+});
 
 function getActiveUsers() {
     return connectedUsers;
