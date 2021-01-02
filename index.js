@@ -14,7 +14,7 @@ const io = require("socket.io")(http, {
       methods: ["GET", "POST"],
       credentials: true
     },
-    transports : ['polling']
+    transports : ['websocket']
   });
   
   
