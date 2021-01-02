@@ -45,13 +45,14 @@ io.on("connection", socket => {
     });
 
 
-    socket.on('game.piano.success', username => {
-        console.log(`${username} a réussi l'épreuve du Piano !`);
-        socket.to("admin").emit("admin.new.logs", `${username} a réussi l'épreuve du Piano !`);
-        addPoint(username);
+    socket.on('game.step.success', obj => {
+        console.log(`${obj.username} a réussi l'épreuve du ${obj.step} !`);
+        socket.to("admin").emit("admin.new.logs", `${obj.username} a réussi l'épreuve du ${obj.step} !`);
+        addPoint(obj.username);
         socket.emit("users.list.updated", connectedUsers);
         socket.broadcast.emit("users.list.updated", connectedUsers);
     })
+
 
     socket.on('user.disconnect', user => {
         console.log(`${username} has disconnected`);
