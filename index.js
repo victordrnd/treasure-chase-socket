@@ -6,19 +6,21 @@ const http = require('http').Server(app);
 var corsOptions = {
     origin: ["http://localhost:4200", "https://tresor.victordurand.fr", "https://rhumpa-loopa.eu"],
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-  }
+}
 
 const io = require("socket.io")(http, {
     cors: {
-      origin: ["http://localhost:4200", "https://tresor.victordurand.fr", "https://rhumpa-loopa.eu"],
-      methods: ["GET", "POST"],
-      credentials: true
+        origin: ["http://localhost:4200", "https://tresor.victordurand.fr", "https://rhumpa-loopa.eu"],
+        methods: ["GET", "POST"],
+        credentials: true
     },
-    transports : ['websocket']
-  });
-  
-  
+    transports: ['websocket']
+});
+
+
 let connectedUsers = [];
+
+let winners = [];
 
 io.on("connection", socket => {
     socket.on('user.login', username => {
@@ -51,6 +53,13 @@ io.on("connection", socket => {
         addPoint(obj.username);
         socket.emit("users.list.updated", connectedUsers);
         socket.broadcast.emit("users.list.updated", connectedUsers);
+
+        const user_index = getUserIndex(obj.username);
+        if (connectedUsers[user_index].score == 300) {
+            this.winners.push(connectedUsers[user_index]);
+            console.log(`${obj.username} a terminé la chasse au trésor`);
+            socket.to("admin").emit("admin.new.logs", `${obj.username} a terminé la chasse au trésor à la position : ${this.winners.length}`);
+        }
     })
 
 
@@ -80,7 +89,7 @@ io.on("connection", socket => {
         socket.broadcast.emit("waiting.message", message);
     })
 });
-app.get("/connected_users",cors(corsOptions), (req, res) => {
+app.get("/connected_users", cors(corsOptions), (req, res) => {
     res.send(getActiveUsers());
 })
 
@@ -88,6 +97,11 @@ app.get("/user_exists", cors(corsOptions), (req, res) => {
     const email = req.query.email;
     res.send(userExists(email));
 });
+
+app.get("/winners", cors(corsOptions), (req, res) => {
+    res.send(winners);
+});
+
 
 function getActiveUsers() {
     return connectedUsers;
@@ -111,12 +125,13 @@ function getUserIndex(username) {
     return -1;
 }
 
-function addPoint(username){
+function addPoint(username) {
     const user_index = getUserIndex(username);
-    if(connectedUsers[user_index]){
+    if (connectedUsers[user_index]) {
         connectedUsers[user_index].score += 100
     }
 }
+
 
 
 http.listen(process.env.PORT || 3000);
