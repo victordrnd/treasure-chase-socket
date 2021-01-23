@@ -55,10 +55,12 @@ io.on("connection", socket => {
         socket.broadcast.emit("users.list.updated", connectedUsers);
 
         const user_index = getUserIndex(obj.username);
-        if (connectedUsers[user_index].score == 300) {
-            this.winners.push(connectedUsers[user_index]);
-            console.log(`${obj.username} a terminé la chasse au trésor`);
-            socket.to("admin").emit("admin.new.logs", `${obj.username} a terminé la chasse au trésor à la position : ${this.winners.length}`);
+        if(connectedUsers[user_index]){
+           if (connectedUsers[user_index].score == 300) {
+                this.winners.push(connectedUsers[user_index]);
+                console.log(`${obj.username} a terminé la chasse au trésor`);
+                socket.to("admin").emit("admin.new.logs", `${obj.username} a terminé la chasse au trésor à la position : ${this.winners.length}`);
+            }
         }
     })
 
