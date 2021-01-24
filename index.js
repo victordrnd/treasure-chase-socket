@@ -10,7 +10,7 @@ var corsOptions = {
 
 const io = require("socket.io")(http, {
     cors: {
-        origin: ["http://localhost:4200", "https://tresor.victordurand.fr", "https://rhumpa-loopa.eu"],
+        origin: ["http://localhost:4200", "https://tresor.victordurand.fr", "https://rhumpa-loopa.fr", "http://rhumpa-loopa.fr"],
         methods: ["GET", "POST"],
         credentials: true
     },
