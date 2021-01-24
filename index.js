@@ -4,13 +4,13 @@ var cors = require('cors');
 const http = require('http').Server(app);
 //const io = require('socket.io')(http, { origins: ['http://localhost:4200', "*:*"], transports: ['polling', 'flashsocket'] });
 var corsOptions = {
-    origin: ["http://localhost:4200", "https://tresor.victordurand.fr", "https://rhumpa-loopa.eu"],
+    origin: ["http://localhost:4200", "https://tresor.victordurand.fr", "https://rhumpa-loompa.fr"],
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
 const io = require("socket.io")(http, {
     cors: {
-        origin: ["http://localhost:4200", "https://tresor.victordurand.fr", "https://rhumpa-loopa.fr", "http://rhumpa-loopa.fr"],
+        origin: ["http://localhost:4200", "https://tresor.victordurand.fr", "https://rhumpa-loompa.fr", "http://rhumpa-loompa.fr"],
         methods: ["GET", "POST"],
         credentials: true
     },
