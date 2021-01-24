@@ -56,13 +56,21 @@ io.on("connection", socket => {
 
         const user_index = getUserIndex(obj.username);
         if(connectedUsers[user_index]){
-           if (connectedUsers[user_index].score == 300) {
-                this.winners.push(connectedUsers[user_index]);
+           if (connectedUsers[user_index].score == 400) {
+                winners.push(connectedUsers[user_index]);
                 console.log(`${obj.username} a terminé la chasse au trésor`);
-                socket.to("admin").emit("admin.new.logs", `${obj.username} a terminé la chasse au trésor à la position : ${this.winners.length}`);
+                socket.to("admin").emit("admin.new.logs", `${obj.username} a terminé la chasse au trésor à la position : ${winners.length}`);
                 socket.to("admin").emit("admin.new.winner", obj.username)
             }
         }
+    })
+
+    socket.on('game.reset', obj => {
+        console.log(`${obj.username} a choisis la mauvaise liste, il repart à zéro !`);
+        socket.to("admin").emit("admin.new.logs", `${obj.username} a choisis la mauvaise liste, il repart à zéro !`);
+        resetPoint(obj.username);
+        socket.emit("users.list.updated", connectedUsers);
+        socket.broadcast.emit("users.list.updated", connectedUsers);
     })
 
 
@@ -135,6 +143,12 @@ function addPoint(username) {
     }
 }
 
+function resetPoint(username) {
+    const user_index = getUserIndex(username);
+    if (connectedUsers[user_index]) {
+        connectedUsers[user_index].score = 0
+    }
+}
 
 
 http.listen(process.env.PORT || 3000);
