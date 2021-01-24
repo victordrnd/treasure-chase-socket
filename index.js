@@ -60,6 +60,7 @@ io.on("connection", socket => {
                 this.winners.push(connectedUsers[user_index]);
                 console.log(`${obj.username} a terminé la chasse au trésor`);
                 socket.to("admin").emit("admin.new.logs", `${obj.username} a terminé la chasse au trésor à la position : ${this.winners.length}`);
+                socket.to("admin").emit("admin.new.winner", obj.username)
             }
         }
     })
