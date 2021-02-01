@@ -1,3 +1,4 @@
+//https://socket-server.victordurand.fr:4433/
 const app = require('express')();
 var cors = require('cors');
 const axios = require('axios');
@@ -29,6 +30,8 @@ const io = require("socket.io")(http, {
 let connectedUsers = [];
 
 let winners = [];
+
+isOpen = false;
 
 io.on("connection", socket => {
     socket.on('user.login', user => {
@@ -128,6 +131,16 @@ app.get("/winners", cors(corsOptions), (req, res) => {
     res.send(winners);
 });
 
+app.get('/status', cors(corsOptions), (req, res) => {
+    res.send({status : isOpen});
+});
+
+app.post('/status/change', cors(corsOptions), (req, res) => {
+    const status = req.query.status;
+    console.log(status);
+    isOpen = status; 
+    res.send({status : isOpen});
+});
 
 function getActiveUsers() {
     return connectedUsers;
