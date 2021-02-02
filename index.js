@@ -7,11 +7,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 var corsOptions = {
-    origin: ['http://localhost:4200'],
+    origin: ['http://localhost:4200', "https://black-pinthere.fr"],
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    //res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization');
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -19,7 +19,7 @@ app.use(function (req, res, next) {
 });
 const io = require("socket.io")(http, {
     cors: {
-        origin: ["http://localhost:4200", "https://tresor.victordurand.fr", "https://rhumpa-loompa.fr", "http://rhumpa-loompa.fr"],
+        origin: ["http://localhost:4200", "https://tresor.victordurand.fr", "https://black-pinthere.fr", "http://rhumpa-loompa.fr"],
         methods: ["GET", "POST"],
         credentials: true
     },
