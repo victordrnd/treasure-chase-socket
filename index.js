@@ -7,11 +7,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 var corsOptions = {
-    origin: ['http://localhost:4200', "https://black-pinthere.fr"],
+    origin: ["https://black-pinthere.fr"],
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', 'https://black-pinthere.fr');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization');
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -118,11 +118,11 @@ io.on("connection", socket => {
 
 
 
-app.get("/connected_users", cors(), (req, res) => {
+app.get("/connected_users", cors(corsOptions), (req, res) => {
     res.send(getActiveUsers());
 })
 
-app.get("/user_exists", cors(), (req, res) => {
+app.get("/user_exists", cors(corsOptions), (req, res) => {
     const email = req.query.email;
     res.send(userExists(email));
 });
