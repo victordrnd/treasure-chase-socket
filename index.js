@@ -72,13 +72,13 @@ io.on("connection", socket => {
         // }
     })
 
-    // socket.on('game.reset', obj => {
-    //     console.log(`${obj.lastname} ${obj.firstname} a choisis la mauvaise liste, il repart à zéro !`);
-    //     socket.to("admin").emit("admin.new.logs", `${obj.lastname} ${obj.firstname} a choisis la mauvaise liste, il repart à zéro !`);
+    socket.on('game.reset', obj => {
+         console.log(`${obj.lastname} ${obj.firstname} a choisis la mauvaise liste, il repart à zéro !`);
+         socket.to("admin").emit("admin.new.logs", `${obj.lastname} ${obj.firstname} a choisis la mauvaise liste, il repart à zéro !`);
     //     resetPoint(obj);
     //     socket.emit("users.list.updated", connectedUsers);
     //     socket.broadcast.emit("users.list.updated", connectedUsers);
-    // })
+     });
 
 
     socket.on('user.disconnect', user => {
