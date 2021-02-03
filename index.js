@@ -7,11 +7,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 var corsOptions = {
-    origin: ["https://black-pinthere.fr"],
+    origin: [process.env.CORS_ALLOWED],
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'https://black-pinthere.fr');
+    res.setHeader('Access-Control-Allow-Origin', process.env.CORS_ALLOWED);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization');
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -19,7 +19,7 @@ app.use(function (req, res, next) {
 });
 const io = require("socket.io")(http, {
     cors: {
-        origin: ["http://localhost:4200", "https://tresor.victordurand.fr", "https://black-pinthere.fr", "http://rhumpa-loompa.fr"],
+        origin: [process.env.CORS_ALLOWED],
         methods: ["GET", "POST"],
         credentials: true
     },
@@ -57,28 +57,28 @@ io.on("connection", socket => {
     socket.on('game.step.success', obj => {
         console.log(`${obj.lastname} ${obj.firstname} a réussi l'épreuve du ${obj.step} !`);
         socket.to("admin").emit("admin.new.logs", `${obj.lastname} ${obj.firstname} a réussi l'épreuve du ${obj.step} !`);
-        addPoint(obj);
+        //addPoint(obj);
         socket.emit("users.list.updated", connectedUsers);
         socket.broadcast.emit("users.list.updated", connectedUsers);
 
-        const user_index = getUserIndex(obj);
-        if(connectedUsers[user_index]){
-           if (connectedUsers[user_index].score == 400) {
-                winners.push(connectedUsers[user_index]);
-                console.log(`${obj.lastname} ${obj.firstname} a terminé la chasse au trésor`);
-                socket.to("admin").emit("admin.new.logs", `${obj.lastname} ${obj.firstname} a terminé la chasse au trésor à la position : ${winners.length}`);
-                socket.to("admin").emit("admin.new.winner", obj)
-            }
-        }
+        // const user_index = getUserIndex(obj);
+        // if(connectedUsers[user_index]){
+        //    if (connectedUsers[user_index].score == 400) {
+        //         winners.push(connectedUsers[user_index]);
+        //         console.log(`${obj.lastname} ${obj.firstname} a terminé la chasse au trésor`);
+        //         socket.to("admin").emit("admin.new.logs", `${obj.lastname} ${obj.firstname} a terminé la chasse au trésor à la position : ${winners.length}`);
+        //         socket.to("admin").emit("admin.new.winner", obj)
+        //     }
+        // }
     })
 
-    socket.on('game.reset', obj => {
-        console.log(`${obj.lastname} ${obj.firstname} a choisis la mauvaise liste, il repart à zéro !`);
-        socket.to("admin").emit("admin.new.logs", `${obj.lastname} ${obj.firstname} a choisis la mauvaise liste, il repart à zéro !`);
-        resetPoint(obj);
-        socket.emit("users.list.updated", connectedUsers);
-        socket.broadcast.emit("users.list.updated", connectedUsers);
-    })
+    // socket.on('game.reset', obj => {
+    //     console.log(`${obj.lastname} ${obj.firstname} a choisis la mauvaise liste, il repart à zéro !`);
+    //     socket.to("admin").emit("admin.new.logs", `${obj.lastname} ${obj.firstname} a choisis la mauvaise liste, il repart à zéro !`);
+    //     resetPoint(obj);
+    //     socket.emit("users.list.updated", connectedUsers);
+    //     socket.broadcast.emit("users.list.updated", connectedUsers);
+    // })
 
 
     socket.on('user.disconnect', user => {
@@ -108,7 +108,7 @@ io.on("connection", socket => {
     });
 
     socket.on("admin.users.updated", () => {
-        socket.to("admin").emit("admin.new.logs", "La liste des scores a été mise à jour !");
+        socket.to("admin").emit("admin.new.logs", "La liste des scores a été mise à jour par un admin !");
         socket.emit("users.list.updated", connectedUsers);
         socket.broadcast.emit("users.list.updated", connectedUsers);
     })
