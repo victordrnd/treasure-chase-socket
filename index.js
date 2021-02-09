@@ -46,9 +46,9 @@ io.on("connection", socket => {
         socket.broadcast.emit('users.list.updated', connectedUsers);
         socket.once('disconnect', reason => {
             console.log(`${user.lastname} ${user.firstname} has disconnected`);
-            const index = getUserIndex(user);
-            if (index !== -1)
-                connectedUsers.splice(index, 1);
+            //const index = getUserIndex(user);
+            //if (index !== -1)
+                //connectedUsers.splice(index, 1);
             socket.broadcast.emit('users.list.updated', connectedUsers);
         });
     });
