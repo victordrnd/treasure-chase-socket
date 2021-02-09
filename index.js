@@ -46,9 +46,9 @@ io.on("connection", socket => {
         socket.broadcast.emit('users.list.updated', connectedUsers);
         socket.once('disconnect', reason => {
             console.log(`${user.lastname} ${user.firstname} has disconnected`);
-            //const index = getUserIndex(user);
-            //if (index !== -1)
-                //connectedUsers.splice(index, 1);
+            const index = getUserIndex(user);
+            if (index !== -1)
+                connectedUsers.splice(index, 1);
             socket.broadcast.emit('users.list.updated', connectedUsers);
         });
     });
@@ -148,7 +148,7 @@ function getActiveUsers() {
 
 function userExists(user) {
     for (i = 0; i < connectedUsers.length; i++) {
-        if (connectedUsers[i].email == user.email) {
+        if (connectedUsers[i].id == user.id) {
             return true;
         }
     }
@@ -157,7 +157,7 @@ function userExists(user) {
 
 function getUserIndex(user) {
     for (i = 0; i < connectedUsers.length; i++) {
-        if (connectedUsers[i].email == user.email) {
+        if (connectedUsers[i].id == user.id) {
             return i;
         }
     }
